@@ -322,36 +322,33 @@ function ActionFlowContextApp({children, currentVault}: {children: ReactNode, cu
 		/* 🔵 - Yearn Finance **********************************************************************
 		** Init possibleOptionsFrom and possibleOptionsTo arrays.
 		******************************************************************************************/
-		if (safeChainID === 1 && currentVault && toAddress(currentVault.token.address) === WETH_TOKEN_ADDRESS) {
-			payloadFrom.push(...[
-				setZapOption({name: 'ETH', symbol: 'ETH', address: ETH_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18}),
-				setZapOption({name: 'wETH', symbol: 'wETH', address: WETH_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18})
-			]);
-		} else if (safeChainID === 250 && currentVault && toAddress(currentVault.token.address) === WFTM_TOKEN_ADDRESS) {
-			payloadFrom.push(...[
-				setZapOption({name: 'FTM', symbol: 'FTM', address: ETH_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18}),
-				setZapOption({name: 'wFTM', symbol: 'wFTM', address: WFTM_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18})
-			]);
-		} else {
-			payloadFrom.push(
-				setZapOption({
-					name: currentVault?.token?.display_name || currentVault?.token?.name,
-					symbol: currentVault?.token?.symbol,
-					address: toAddress(currentVault.token.address),
-					chainID: currentVault?.chainID === 1337 ? safeChainID : currentVault?.chainID,
-					decimals: currentVault?.token?.decimals || 18
-				})
-			);
-			payloadTo.push(
-				setZapOption({
-					name: currentVault?.display_name || currentVault?.name,
-					symbol: currentVault?.symbol,
-					address: toAddress(currentVault.address),
-					chainID: currentVault?.chainID === 1337 ? safeChainID : currentVault?.chainID,
-					decimals: currentVault?.decimals || 18
-				})
-			);
-		}
+		payloadFrom.push(
+			setZapOption({
+				name: currentVault?.token?.display_name || currentVault?.token?.name,
+				symbol: currentVault?.token?.symbol,
+				address: toAddress(currentVault.token.address),
+				chainID: currentVault?.chainID === 1337 ? safeChainID : currentVault?.chainID,
+				decimals: currentVault?.token?.decimals || 18
+			})
+		);
+		payloadTo.push(
+			setZapOption({
+				name: currentVault?.display_name || currentVault?.name,
+				symbol: currentVault?.symbol,
+				address: toAddress(currentVault.address),
+				chainID: currentVault?.chainID === 1337 ? safeChainID : currentVault?.chainID,
+				decimals: currentVault?.decimals || 18
+			})
+		);
+		if (safeChainID === 1) {
+			const nativeZapOption = setZapOption({name: 'ETH', symbol: 'ETH', address: ETH_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18});
+			payloadFrom.push(nativeZapOption);
+			payloadTo.push(nativeZapOption);
+		} else if (safeChainID === 250) {
+			const nativeZapOption = setZapOption({name: 'FTM', symbol: 'FTM', address: ETH_TOKEN_ADDRESS, chainID: safeChainID, decimals: 18});
+			payloadFrom.push(nativeZapOption);
+			payloadTo.push(nativeZapOption);
+		} 
 
 		/* 🔵 - Yearn Finance **********************************************************************
 		** Init selectedFrom and selectedTo as default, aka underlyingToken to vaultToken.
